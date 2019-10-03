@@ -1,0 +1,33 @@
+@startuml Connect
+
+Client -> MRM: connect \n(POST http://adr/api/list)
+activate MRM
+MRM -> MRM : update Client info
+return response
+
+||45||
+
+Client -> MRM: Send message \n(using zeromq)
+
+||45||
+
+Server -> MRM: check list \n(GET http://adr/api/list/all)
+activate MRM
+MRM -> MRM : check my enrolled list
+return response
+
+||45||
+
+Server -> MRM: get item \n(GET http://adr/api/list/{name}
+activate MRM
+MRM -> MRM : check request
+return response
+
+||45||
+
+Client -> MRM: close \n(DELETE http://adr/api/list/name)
+activate MRM
+MRM -> MRM : delete seleceted list
+return response
+
+@enduml
