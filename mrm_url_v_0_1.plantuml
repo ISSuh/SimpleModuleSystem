@@ -15,7 +15,13 @@ state URL{
             Server: - GET http://addr/api/list/{ItemName}/info // 해당 아이템 정보
             Server: - GET http://addr/api/list/{ItemName}/data // 해당 아이템 데이터
         }
+    }
 
+    state Setting{
+        Setting: http://addr/api/setting
+        state System{
+            System: - GET http://addr/api/setting/info // MRM 시스템 정보
+        }
     }
 }
 
