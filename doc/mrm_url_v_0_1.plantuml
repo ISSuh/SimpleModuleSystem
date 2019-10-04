@@ -1,0 +1,31 @@
+@startuml url
+
+state URL{
+    state ItemList{
+        ItemList: http://addr/api/list
+        state Client{
+            Client: - GET http://addr/api/list/count // 등록된 클라이언트 수
+            Client: - GET http://addr/api/list/all // 등록된 모든 클라이언트 리스트 요약정보
+            Client: - POST http://addr/api/list // 클라이언트에서 새로운 아이템 등록
+            Client: - DELETE http://addr/api/list/{ItemName} // 해당 아이템 제거
+        }
+        state Server{
+            Server: - GET http://addr/api/list/count // 등록된 클라이언트 수
+            Server: - GET http://addr/api/list/all // 등록된 모든 클라이언트 리스트 요약정보
+            Server: - GET http://addr/api/list/{ItemName}/info // 해당 아이템 정보
+            Server: - GET http://addr/api/list/{ItemName}/data // 해당 아이템 데이터
+        }
+    }
+
+    state Setting{
+        Setting: http://addr/api/setting
+        state System{
+            System: - GET http://addr/api/setting/info // MRM 시스템 정보
+        }
+    }
+}
+
+note "MRM Restful API List" as URL_memo
+
+@enduml
+
