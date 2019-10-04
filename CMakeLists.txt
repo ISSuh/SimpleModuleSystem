@@ -22,6 +22,7 @@ SET ( CMAKE_EXE_LINKER_FLAGS_RELEASE "-DRELEASE -DLINKER_FLAGS" )
 find_package(Boost REQUIRED system)
 find_package(cpprestsdk REQUIRED)
 
+link_directories(${PROJECT_SOURCE_DIR}/third_party/spdlog)
 #-------------------------------------------------------------------------------
 # Project files
 #-------------------------------------------------------------------------------
@@ -39,9 +40,12 @@ set(SOURCES
 add_executable(${PROJECT_NAME} ${SOURCES})
 target_link_libraries(${PROJECT_NAME} 
 	PRIVATE 
-	cpprestsdk::cpprest  
 	${Boost_SYSTEM_LIBRARY}
+
+	cpprestsdk::cpprest  
 	crypto
 	ssl
+
+	spdlog
 )
 set_property(TARGET ${PROJECT_NAME} PROPERTY FOLDER "build")
