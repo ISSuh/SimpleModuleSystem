@@ -5,6 +5,9 @@
 #include <iostream>
 #include <memory>
 #include <thread>
+#include <unordered_map>
+#include <vector>
+
 #include <csignal>
 
 // casablanca
@@ -20,6 +23,29 @@ using namespace web;
 
 namespace mrm
 {
+
+class MrmUriList
+{
+public:
+	MrmUriList()
+	{
+		uri.insert(std::make_pair("api", true));
+		uri.insert(std::make_pair("list", true));
+		uri.insert(std::make_pair("setting", true));
+	}
+	
+	std::unordered_map<std::string, bool> uri;
+};
+
+class Publisher
+{
+
+};
+
+class Message
+{
+
+};
 
 class MrmApiServer
 {
@@ -77,20 +103,42 @@ private:
 	// Define Get method 
 	void Get(http_request req)
 	{
-		auto http_get_vars = uri::split_query(req.request_uri().query());
-		auto http_get_path = uri::split_path(req.request_uri().path());
+		auto httpGetPath = uri::split_path(req.relative_uri().path());
 
-		test(req, status_codes::OK, json::value::string(U("TEST")));
+
+		if(httpGetPath[0] == "list")
+		{
+			req.reply(status_codes::OK);
+		}
+		else if(httpGetPath[0] == "setting")
+		{
+			req.reply(status_codes::OK);
+		}
+
+		req.reply(status_codes::NotFound);
 	}
 
 	// Define Post method 
 	void Post(http_request req)
 	{
+		auto httpPostPath = uri::split_path(req.relative_uri().path());
+
+
+		if(httpPostPath[0] == "list")
+		{
+			if(httpPostPath[1] == "item")
+			{
+				AddNewMessage(req);
+			}
+		}
+
+		req.reply(status_codes::NotFound);
 	}
 
 	// Define Put method 
 	void Put(http_request req)
 	{
+
 	}
 
 	// Define Delete method 
@@ -101,6 +149,11 @@ private:
 private:
 	// Define Main Logic method
 
+	void postItem(const http_request &request)
+	{
+		request.reply(status_codes::OK);
+	}
+
 	void test(const http_request &request, const status_code &status, const json::value &response)
 	{
 		json::value resp;
@@ -109,23 +162,26 @@ private:
 
 		// Pack in the current time for debugging purposes.
 		time_t now = time(0);
-		// utility::stringstream_t ss;`
-		// ss << put_time(localtime(&now), L"%Y-%m-%dT%H:%S:%MZ");
 		resp[U("server_time")] = json::value::string(std::to_string(now));
 
 		request.reply(status, resp);
 	}
 
 private:
-	// Casablanca
-	std::unique_ptr<http_listener> m_listener;
-
-	// std
-	utility::string_t m_address;
-
 	//log
 	std::shared_ptr<spdlog::logger> m_consoleLogger;
 	std::shared_ptr<spdlog::logger> m_fileLogger;
+
+	// casablanca
+	std::unique_ptr<http_listener> m_listener;
+
+	// uri Lists
+	MrmUriList uriList;
+	
+	// std
+	utility::string_t m_address;
+
+
 
 };
 
